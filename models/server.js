@@ -35,7 +35,6 @@ class Server {
 
     // Configuración del motor de vistas EJS
     this.app.set("view engine", "ejs");
-    this.app.set("views", path.join(__dirname, "views"));
   }
 
   async conectarDB() {
