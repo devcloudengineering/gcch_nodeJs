@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Mensaje de Contacto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .email-header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .email-body {
+            padding: 20px;
+        }
+
+        .email-body p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .email-body strong {
+            color: #007bff;
+        }
+
+        .email-footer {
+            background-color: #f8f8f8;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <!-- Cabecera del correo -->
+        <div class="email-header">
+            <h1>Gestor Contable Chile</h1>
+        </div>
+
+        <!-- Cuerpo del correo -->
+        <div class="email-body">
+            <p><strong>Nombre:</strong>
+                <%= nombre %>
+            </p>
+            <p><strong>Correo Electrónico:</strong>
+                <%= correo %>
+            </p>
+            <p><strong>Teléfono:</strong>
+                <%= telefono %>
+            </p>
+            <p><strong>Mensaje:</strong></p>
+            <p><em>"<%= mensaje %>"</em></p>
+        </div>
+
+        <!-- Pie del correo -->
+        <div class="email-footer">
+            <p>Este correo fue enviado desde el formulario de contacto de tu sitio web.</p>
+        </div>
+    </div>
+</body>
+
+</html>

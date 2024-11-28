@@ -1,12 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 const { dbConnection } = require("../database/config.js");
+const ejs = require("ejs");
+const path = require("path");
 
 class Server {
   constructor() {
+    console.log("MongoDB URI:", process.env.MONGODBCNN);
+    console.log("Nodemail key GMAIL:", process.env.GMAILKEY);
+
     this.app = express();
     this.port = process.env.PORT;
     this.usuariosPath = "/api/usuarios";
+    this.nodemailerPath = "/api/nodemailer";
 
     // DB conexion
     this.conectarDB();
@@ -26,6 +32,10 @@ class Server {
     this.app.use(express.static("public"));
     // Lectura y parseo
     this.app.use(express.json());
+
+    // Configuración del motor de vistas EJS
+    this.app.set("view engine", "ejs");
+    this.app.set("views", path.join(__dirname, "views"));
   }
 
   async conectarDB() {
@@ -34,6 +44,7 @@ class Server {
 
   routes() {
     this.app.use(this.usuariosPath, require("../routes/usuarios.js"));
+    this.app.use(this.nodemailerPath, require("../routes/nodemailer.js"));
   }
 
   listen() {
