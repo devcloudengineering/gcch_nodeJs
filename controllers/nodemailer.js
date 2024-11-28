@@ -5,10 +5,10 @@ const path = require("path");
 
 const postNodemailer = async (req, res = response) => {
   try {
-    const { nombre, correo, telefono, mensaje } = req.body;
+    const { nombre, correo, telefono, mensaje, tipo } = req.body;
     const htmlEmail = await ejs.renderFile(
       path.join(__dirname, "../", "views", "email.ejs"),
-      { nombre, correo, telefono, mensaje }
+      { nombre, correo, telefono, tipo, mensaje }
     );
 
     const userGmail = "devcloudengineering@gmail.com";
@@ -39,12 +39,12 @@ const postNodemailer = async (req, res = response) => {
       console.log("Email enviado: " + info.response);
     });
 
-    res.status(201).json({
-      ok: true,
-      status: "Mensaje enviado por SMTP",
+    res.status(200).json({
+      status: "ok",
       nombre,
       correo,
       telefono,
+      tipo,
       mensaje,
     });
   } catch (error) {
