@@ -7,12 +7,18 @@ const {
   patchUsuario,
   putUsuario,
 } = require("../controllers/usuarios");
-const { validarCampos } = require("../middlewares/validar-campos");
 const {
   esRolValido,
   existeEmail,
   existeID,
 } = require("../helpers/db-validators");
+
+const {
+  validarJWT,
+  esAdminRole,
+  tieneRols,
+  validarCampos,
+} = require("../middlewares");
 
 const router = Router();
 
@@ -45,10 +51,13 @@ router.post(
 );
 router.delete(
   "/:id",
+  validarJWT,
+  esAdminRole,
   [
     check("id", "El ID no es valido en la BD MongoDB").isMongoId(),
     check("id").custom(existeID),
   ],
+  tieneRols("ADMIN_ROLE", "OTROS_ROLE"),
   validarCampos,
   deleteUsuario
 );
