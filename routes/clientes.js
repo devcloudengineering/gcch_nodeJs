@@ -3,7 +3,7 @@ const { check } = require("express-validator");
 const {
   getCliente,
   postUsuario,
-  deleteUsuario,
+  deleteCliente,
   patchUsuario,
   putUsuario,
 } = require("../controllers/clientes");
@@ -59,7 +59,7 @@ router.delete(
   ],
   tieneRols("ADMIN_ROLE", "OTROS_ROLE"),
   validarCampos,
-  deleteUsuario
+  deleteCliente
 );
 router.patch("/", patchUsuario);
 

@@ -3,11 +3,11 @@ const Cliente = require("../models/cliente.js");
 const bcryptjs = require("bcryptjs");
 
 const getCliente = async (req = request, res = response) => {
-  const query = { estado: true };
+  const query = { estado: true }; // En caso de recuperar solo los activos
 
   const [total, clientes] = await Promise.all([
     Cliente.countDocuments(query),
-    Cliente.find(query),
+    Cliente.find(),
   ]);
 
   res.status(200).json({
@@ -70,23 +70,37 @@ const patchUsuario = (req, res = response) => {
   });
 };
 
-const deleteUsuario = async (req, res = response) => {
+const deleteCliente = async (req, res = response) => {
   const { id } = req.params;
 
-  // const usuario = await Cliente.findByIdAndDelete(id);
-  // para mantener integridad de los datos se recomienda manejar un campo de estado que haga la distincion si esta activo o no el usuario, se esta forma solo filtramos los que tengan estado true
-  const usuario = await Cliente.findByIdAndUpdate(id, { estado: false });
+  // Eliminacion logica
+  const clienteEliminado = await Cliente.findByIdAndUpdate(id, {
+    estado: false,
+  });
 
-  res.status(403).json({
+  if (!clienteEliminado) {
+    res.status(403).json({
+      ok: false,
+      msg: "Error al eliminar cliente en la base de datos, no existe",
+    });
+  }
+
+  const [total, clientes] = await Promise.all([
+    Cliente.countDocuments(),
+    Cliente.find(),
+  ]);
+
+  res.status(200).json({
     ok: true,
-    msg: "delete API - controlador",
-    usuario,
+    msg: "get API - controlador",
+    total,
+    clientes,
   });
 };
 
 module.exports = {
   getCliente,
-  deleteUsuario,
+  deleteCliente,
   patchUsuario,
   postUsuario,
   putUsuario,

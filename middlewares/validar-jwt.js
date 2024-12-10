@@ -29,6 +29,7 @@ const validarJWT = async (req, res = response, next) => {
 
     // Enviar usuario autenticado a la request para que sus demas middleware puedan obtener informacion de el
     req.usuarioAutenticado = usuarioAutenticado;
+    req.IdUsuarioAutenticado = usuarioAutenticado.id;
 
     // Verificar si el uid tiene estado true, ya que debe estar activo para realizar operaciones de admin
     if (!usuarioAutenticado.estado) {
