@@ -12,6 +12,7 @@ class Server {
     this.app = express();
     this.port = process.env.PORT;
     this.usuariosPath = "/api/usuarios";
+    this.clientesPath = "/api/clientes";
     this.authPath = "/api/auth";
     this.nodemailerPath = "/api/nodemailer";
 
@@ -44,6 +45,7 @@ class Server {
 
   routes() {
     this.app.use(this.usuariosPath, require("../routes/usuarios.js"));
+    this.app.use(this.clientesPath, require("../routes/clientes.js"));
     this.app.use(this.authPath, require("../routes/auth.js"));
     this.app.use(this.nodemailerPath, require("../routes/nodemailer.js"));
   }
