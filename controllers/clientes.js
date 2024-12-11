@@ -37,29 +37,44 @@ const postUsuario = async (req, res = response) => {
   });
 };
 
-const putUsuario = async (req, res = response) => {
-  // parametros de segmento
-  // const id = req.params.id;
-  //   http://localhost:3000/api/usuarios/27
-  // {
-  //     "ok": true,
-  //     "msg": "put API - controlador",
-  //     "id": "27"
-  // }
+const putCliente = async (req, res = response) => {
   const { id } = req.params;
-  const { password, google, correo, ...resto } = req.body;
+  const {
+    cliente,
+    rutcliente,
+    razonsocial,
+    rutempresa,
+    domicilio,
+    notificaciones,
+    telefono,
+    "representante(s)": representantes,
+    estado,
+  } = req.body;
 
-  // TODO validar contra la base de datos
-  if (password) {
-    const salt = bcryptjs.genSaltSync();
-    resto.password = bcryptjs.hashSync(password, salt);
+  const clienteActualizado = await Cliente.findByIdAndUpdate(id, {
+    cliente,
+    rutcliente,
+    razonsocial,
+    rutempresa,
+    domicilio,
+    notificaciones,
+    telefono,
+    "representante(s)": representantes,
+    estado,
+  });
+
+  if (!clienteActualizado) {
+    res.status(401).json({
+      ok: false,
+      msg: "Cliente no encontrado en la base de datos",
+    });
   }
 
-  const usuario = await Cliente.findByIdAndUpdate(id, resto);
+  const clientes = await Cliente.find();
   res.status(200).json({
     ok: true,
     msg: "put API - controlador",
-    usuario,
+    clientes,
   });
 };
 
@@ -103,5 +118,5 @@ module.exports = {
   deleteCliente,
   patchUsuario,
   postUsuario,
-  putUsuario,
+  putCliente,
 };

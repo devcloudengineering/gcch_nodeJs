@@ -5,7 +5,7 @@ const {
   postUsuario,
   deleteCliente,
   patchUsuario,
-  putUsuario,
+  putCliente,
 } = require("../controllers/clientes");
 const {
   esRolValido,
@@ -28,10 +28,10 @@ router.put(
   [
     check("id", "El ID no es valido en la BD MongoDB").isMongoId(),
     check("id").custom(existeID),
-    check("rol").custom(esRolValido),
+    // check("rol").custom(esRolValido),
   ],
   validarCampos,
-  putUsuario
+  putCliente
 );
 router.post(
   "/",
@@ -43,7 +43,7 @@ router.post(
       "password",
       "El password debe contener al menos 6 caracteres"
     ).isLength({ min: 6 }),
-    // check("rol", "El rol no es valido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
+    check("rol", "El rol no es valido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
     check("rol").custom(esRolValido),
   ],
   validarCampos,
