@@ -27,7 +27,7 @@ const ClienteSchema = Schema({
   telefono: {
     type: Number,
   },
-  "representante(s)": {
+  representantes: {
     type: String,
   },
   estado: {

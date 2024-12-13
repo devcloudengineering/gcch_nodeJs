@@ -39,7 +39,7 @@ const validarJWT = async (req, res = response, next) => {
     }
   } catch ({ message }) {
     return res.status(401).json({
-      status: "Token no valido",
+      msg: "Token no valido",
       message,
     });
   }

@@ -19,22 +19,60 @@ const getCliente = async (req = request, res = response) => {
 };
 
 const postUsuario = async (req, res = response) => {
-  // const body =b req.body;
-  const { nombre, correo, rol, password } = req.body;
+  try {
+    const {
+      cliente,
+      rutcliente,
+      razonsocial,
+      rutempresa,
+      domicilio,
+      notificaciones,
+      telefono,
+      representantes,
+    } = req.body;
 
-  const usuario = new Cliente({ nombre, correo, rol, password });
+    // Validación básica
+    if (!cliente || !rutcliente || !razonsocial) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Los campos cliente, rutcliente y razonsocial son obligatorios.",
+      });
+    }
 
-  // Encriptar la contraseña (hashearla), genSaltSync() recibe como argumento las vueltas
-  const salt = bcryptjs.genSaltSync();
-  usuario.password = bcryptjs.hashSync(password, salt);
+    // Crear nueva instancia del cliente
+    const usuario = new Cliente({
+      cliente,
+      rutcliente,
+      razonsocial,
+      rutempresa,
+      domicilio,
+      notificaciones,
+      telefono,
+      representantes,
+    });
 
-  // Guardar en la base de datos
-  await usuario.save();
-  res.status(201).json({
-    ok: true,
-    msg: "post API - controlador",
-    usuario,
-  });
+    // Guardar en la base de datos
+    await usuario.save();
+
+    // Consultar lista actualizada de clientes y el total
+    const clientes = await Cliente.find();
+    const total = await Cliente.countDocuments({ estado: true });
+
+    // Respuesta exitosa
+    res.status(201).json({
+      ok: true,
+      msg: "Cliente creado correctamente",
+      clientes,
+      total,
+    });
+  } catch (error) {
+    console.error(error); // Log en servidor para depuración
+    res.status(500).json({
+      ok: false,
+      msg: "Error al procesar la solicitud",
+      error: error.message, // Detalle del error
+    });
+  }
 };
 
 const putCliente = async (req, res = response) => {
@@ -47,7 +85,7 @@ const putCliente = async (req, res = response) => {
     domicilio,
     notificaciones,
     telefono,
-    "representante(s)": representantes,
+    representantes,
     estado,
   } = req.body;
 
@@ -59,7 +97,7 @@ const putCliente = async (req, res = response) => {
     domicilio,
     notificaciones,
     telefono,
-    "representante(s)": representantes,
+    representantes,
     estado,
   });
 
@@ -71,9 +109,11 @@ const putCliente = async (req, res = response) => {
   }
 
   const clientes = await Cliente.find();
+  const total = await Cliente.countDocuments({ estado: true });
   res.status(200).json({
     ok: true,
     msg: "put API - controlador",
+    total,
     clientes,
   });
 };
@@ -101,7 +141,7 @@ const deleteCliente = async (req, res = response) => {
   }
 
   const [total, clientes] = await Promise.all([
-    Cliente.countDocuments(),
+    Cliente.countDocuments({ estado: true }),
     Cliente.find(),
   ]);
 

@@ -7,11 +7,7 @@ const {
   patchUsuario,
   putCliente,
 } = require("../controllers/clientes");
-const {
-  esRolValido,
-  existeEmail,
-  existeID,
-} = require("../helpers/db-validators");
+const { esRolValido, existeID } = require("../helpers/db-validators");
 
 const {
   validarJWT,
@@ -36,15 +32,8 @@ router.put(
 router.post(
   "/",
   [
-    check("correo", "El correo no es valido").isEmail(),
-    check("correo").custom(existeEmail),
-    check("nombre", "El nombre es obligatorio").not().isEmpty(),
-    check(
-      "password",
-      "El password debe contener al menos 6 caracteres"
-    ).isLength({ min: 6 }),
-    check("rol", "El rol no es valido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
-    check("rol").custom(esRolValido),
+    check("notificaciones", "El correo no es valido").isEmail(),
+    // check("rol", "El rol no es valido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
   ],
   validarCampos,
   postUsuario
