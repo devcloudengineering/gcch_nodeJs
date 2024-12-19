@@ -5,46 +5,53 @@ const Usuario = require("../models/usuario");
 const validarJWT = async (req, res = response, next) => {
   const token = req.header("token");
 
+  // Verificar si el token está presente
   if (!token) {
     return res.status(401).json({
-      msg: "No hay token en la peticion",
+      msg: "No hay token en la petición",
     });
   }
+
   try {
-    // Ocupamos try catch ya que verify puede reventar la aplicacion, importante en el catch poner el return para evitar que la API se caiga
+    // Verificar el token
     const { uid, exp } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
-    // Verificar expiracion del token
+    // Verificar expiración del token
     if (Date.now() >= exp * 1000) {
-      return res.status(401).json({ msg: "Token ha expirado" });
+      return res.status(401).json({
+        msg: "Token ha expirado",
+      });
     }
 
-    // Leer usuario autenticado
+    // Buscar el usuario autenticado en la base de datos
     const usuarioAutenticado = await Usuario.findById(uid);
+
+    // Validar si el usuario existe
     if (!usuarioAutenticado) {
-      return res.status(401).json({
+      return res.status(404).json({
         msg: "Usuario no existe en la base de datos",
       });
     }
 
-    // Enviar usuario autenticado a la request para que sus demas middleware puedan obtener informacion de el
+    // Verificar si el usuario está activo
+    if (!usuarioAutenticado.estado) {
+      return res.status(403).json({
+        msg: "Token no válido - estado del usuario autenticado en false",
+      });
+    }
+
+    // Adjuntar información del usuario a la solicitud
     req.usuarioAutenticado = usuarioAutenticado;
     req.IdUsuarioAutenticado = usuarioAutenticado.id;
 
-    // Verificar si el uid tiene estado true, ya que debe estar activo para realizar operaciones de admin
-    if (!usuarioAutenticado.estado) {
-      return res.status(401).json({
-        msg: "Token no valido - estado del usuario autenticado en false",
-      });
-    }
-  } catch ({ message }) {
+    next(); // Continuar al siguiente middleware
+  } catch (error) {
+    // Manejar errores de verificación de token
     return res.status(401).json({
-      msg: "Token no valido",
-      message,
+      msg: "Token no válido",
+      error: error.message,
     });
   }
-
-  next();
 };
 
 module.exports = {
