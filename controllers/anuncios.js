@@ -50,9 +50,9 @@ const postAnuncio = async (req, res = response) => {
 
 const putAnuncio = async (req, res = response) => {
   const { id } = req.params;
-  const { titulo, parrafo, cuerpo, fecha } = req.body;
+  const { titulo, parrafo, cuerpo } = req.body;
 
-  let updatedFields = { titulo, parrafo, cuerpo, fecha };
+  let updatedFields = { titulo, parrafo, cuerpo };
 
   if (req.files?.imagen) {
     // Subir nueva imagen a Cloudinary
@@ -70,6 +70,8 @@ const putAnuncio = async (req, res = response) => {
     }
   );
 
+  const anuncios = await Anuncio.find();
+
   if (!anuncioActualizado) {
     return res.status(404).json({
       ok: false,
@@ -81,6 +83,7 @@ const putAnuncio = async (req, res = response) => {
     ok: true,
     msg: "Anuncio actualizado correctamente",
     anuncio: anuncioActualizado,
+    anuncios,
   });
 };
 

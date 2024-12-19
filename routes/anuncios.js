@@ -21,11 +21,7 @@ router.get("/", getAnuncio);
 
 router.put(
   "/:id",
-  [
-    check("id", "El ID no es valido en la BD MongoDB").isMongoId(),
-    check("id").custom(existeID),
-    // check("rol").custom(esRolValido),
-  ],
+  [check("id", "El ID no es valido en la BD MongoDB").isMongoId()],
   validarCampos,
   putAnuncio
 );
