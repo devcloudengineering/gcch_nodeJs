@@ -10,10 +10,17 @@ const getCliente = async (req = request, res = response) => {
     Cliente.find(),
   ]);
 
+  const clientesPorCiudad = await Cliente.aggregate([
+    { $match: { estado: true } }, // Filtrar solo los clientes activos
+    { $group: { _id: "$ciudad", cantidad: { $sum: 1 } } }, // Agrupar por ciudad y contar
+    { $sort: { cantidad: -1 } }, // Ordenar por cantidad descendente (opcional)
+  ]);
+
   res.status(200).json({
     ok: true,
     msg: "get API - controlador",
     total,
+    clientesPorCiudad,
     clientes,
   });
 };
